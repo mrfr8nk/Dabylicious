@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Auth - Glassmorphism UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a1929 0%, #1a2942 50%, #2c3e58 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(30, 64, 124, 0.4) 0%, rgba(13, 41, 77, 0.4) 100%);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-icon {
+            margin-bottom: 15px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 14px;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 35px 30px;
+        }
+        
+        .page {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        label i {
+            width: 18px;
+            height: 18px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            font-size: 15px;
+            color: white;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(37, 99, 235, 0.4));
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.6);
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(37, 99, 235, 0.5));
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            margin-top: 10px;
+        }
+        
+        .link-text {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+        
+        .link-text a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .link-text a:hover {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .alert {
+            padding: 14px 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.4s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-error {
+            background: rgba(255, 107, 107, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 107, 107, 0.5);
+        }
+        
+        .alert-success {
+            background: rgba(72, 219, 134, 0.3);
+            color: white;
+            border: 1px solid rgba(72, 219, 134, 0.5);
+        }
+        
+        .alert-info {
+            background: rgba(100, 181, 246, 0.3);
+            color: white;
+            border: 1px solid rgba(100, 181, 246, 0.5);
+        }
+
+        .timer-text {
+            text-align: center;
+            margin-top: 15px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-label {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            transition: 0.4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3px;
+            background: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-card h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: 600;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .profile-status {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 107, 107, 0.3);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            margin-top: 0;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 107, 107, 0.4);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-text {
+            flex: 1;
+            color: white;
+            font-size: 14px;
+        }
+
+        .activity-time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+        }
+
+        .otp-input {
+            text-align: center;
+            font-size: 20px;
+            letter-spacing: 5px;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: rgba(10, 25, 41, 0.6);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            margin-top: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: rgba(59, 130, 246, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .footer-copy {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .logo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 12px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-svg {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .logo-container {
+                top: 15px;
+                left: 15px;
+                padding: 10px 16px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer {
+                margin-top: 30px;
+                padding: 25px 15px;
+            }
+
+            .social-links {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <svg class="logo-svg" width="160" height="50" viewBox="0 0 160 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+                </linearGradient>
+                <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+                    <feOffset dx="0" dy="1" result="offsetblur"/>
+                    <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.4"/>
+                    </feComponentTransfer>
+                    <feMerge>
+                        <feMergeNode/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Main Brand Text -->
+            <text x="5" y="26" 
+                  font-family="Poppins, -apple-system, BlinkMacSystemFont, sans-serif" 
+                  font-size="24" 
+                  font-weight="700" 
+                  fill="url(#logoGradient)"
+                  filter="url(#textShadow)"
+                  letter-spacing="1">W.A OTP</text>
+            
+            <!-- Subtitle -->
+            <text x="5" y="42" 
+                  font-family="Poppins, sans-serif" 
+                  font-size="9" 
+                  fill="rgba(255,255,255,0.6)" 
+                  font-weight="400"
+                  letter-spacing="0.5">WhatsApp Auth</text>
+        </svg>
+    </div>
+    
+    <div class="container" id="main-container">
+        <div class="header">
+            <div class="header-icon">
+                <i data-lucide="smartphone" width="48" height="48"></i>
+            </div>
+            <h1 id="header-title">Welcome</h1>
+            <p id="header-subtitle">Secure authentication via WhatsApp</p>
+        </div>
+        
+        <div class="content">
+            <div id="signup-page" class="page active">
+                <div id="signup-alert"></div>
+
+                <div class="toggle-container">
+                    <span class="toggle-label">Remember me</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="remember-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="user"></i>
+                            Full Name
+                        </label>
+                        <input type="text" id="signup-name" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="mail"></i>
+                            Email
+                        </label>
+                        <input type="email" id="signup-email" placeholder="john@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="phone"></i>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="signup-phone" placeholder="+263719647303" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="lock"></i>
+                            Password
+                        </label>
+                        <input type="password" id="signup-password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" id="signup-btn">
+                        <i data-lucide="user-plus"></i>
+                        Sign Up
+                    </button>
+                </form>
+                
+                <div class="link-text">
+                    Already have an account? <a href="#" onclick="showPage('login'); return false;">Login</a>
+                </div>
+            </div>
+            
+            <div id="verify-signup-page" class="page">
+                <div id="verify-signup-alert"></div>
+                
+                <form id="verify-signup-form">
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="shield-check"></i>
+                            Enter OTP Code
+                        </label>
+                        <input type="text" id="verify-signup-code" class="otp-input" placeholder="000000" maxlength="6" required>
+                        <p style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 8px; text-align: center;">Check your WhatsApp for the verification code</p>
+                    </div>
+                    
+                    <button type="submit" id="verify-signup-btn">
+                        <i data-lucide="check-circle"></i>
+                        Verify & Complete Signup
+                    </button>
+
+                    <button type="button" class="secondary-btn" id="resend-signup-btn" onclick="resendOTP('signup')">
+                        <i data-lucide="refresh-cw"></i>
+                        Resend OTP
+                    </button>
+
+                    <div class="timer-text" id="signup-timer"></div>
+                </form>
+                
+                <div class="link-text">
+                    <a href="#" onclick="showPage('signup'); return false;">
+                        <i data-lucide="arrow-left" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
+                        Back to Signup
+                    </a>
+                </div>
+            </div>
+            
+            <div id="login-page" class="page">
+                <div id="login-alert"></div>
+
+                <div class="toggle-container">
+                    <span class="toggle-label">Stay logged in</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="stay-logged-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="phone"></i>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="login-phone" placeholder="+263719647303" required>
+                    </div>
+                    
+                    <button type="submit" id="login-btn">
+                        <i data-lucide="log-in"></i>
+                        Send OTP
+                    </button>
+                </form>
+                
+                <div class="link-text">
+                    Don't have an account? <a href="#" onclick="showPage('signup'); return false;">Sign Up</a>
+                </div>
+            </div>
+            
+            <div id="verify-login-page" class="page">
+                <div id="verify-login-alert"></div>
+                
+                <form id="verify-login-form">
+                    <div class="form-group">
+                        <label>
+                            <i data-lucide="shield-check"></i>
+                            Enter OTP Code
+                        </label>
+                        <input type="text" id="verify-login-code" class="otp-input" placeholder="000000" maxlength="6" required>
+                        <p style="font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 8px; text-align: center;">Check your WhatsApp for the verification code</p>
+                    </div>
+                    
+                    <button type="submit" id="verify-login-btn">
+                        <i data-lucide="check-circle"></i>
+                        Verify & Login
+                    </button>
+
+                    <button type="button" class="secondary-btn" id="resend-login-btn" onclick="resendOTP('login')">
+                        <i data-lucide="refresh-cw"></i>
+                        Resend OTP
+                    </button>
+
+                    <div class="timer-text" id="login-timer"></div>
+                </form>
+                
+                <div class="link-text">
+                    <a href="#" onclick="showPage('login'); return false;">
+                        <i data-lucide="arrow-left" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+            
+            <div id="dashboard-page" class="page">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="user-avatar">JD</div>
+                    <div class="profile-info">
+                        <div class="profile-name" id="user-name"></div>
+                        <div class="profile-status">
+                            <i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i>
+                            Verified Account
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card stat-card">
+                        <i data-lucide="user-check" style="width: 32px; height: 32px; margin: 0 auto;"></i>
+                        <div class="stat-number">1</div>
+                        <p>Active Session</p>
+                    </div>
+
+                    <div class="dashboard-card stat-card">
+                        <i data-lucide="shield" style="width: 32px; height: 32px; margin: 0 auto;"></i>
+                        <div class="stat-number">100%</div>
+                        <p>Security Score</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>
+                        <i data-lucide="user"></i>
+                        Profile Information
+                    </h3>
+                    <p><strong>Email:</strong> <span id="user-email"></span></p>
+                    <p><strong>Phone:</strong> <span id="user-phone"></span></p>
+                    <p><strong>Member Since:</strong> <span id="user-joined">Today</span></p>
+                </div>
+
+                <div class="dashboard-card" id="edit-profile-section">
+                    <h3>
+                        <i data-lucide="edit"></i>
+                        Update Profile
+                    </h3>
+                    <div id="profile-update-alert"></div>
+                    <form id="profile-update-form">
+                        <div class="form-group">
+                            <label>
+                                <i data-lucide="user"></i>
+                                Full Name
+                            </label>
+                            <input type="text" id="update-name" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <i data-lucide="mail"></i>
+                                Email Address
+                            </label>
+                            <input type="email" id="update-email" placeholder="john@example.com" required>
+                        </div>
+                        
+                        <button type="submit" id="update-profile-btn">
+                            <i data-lucide="save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>
+                        <i data-lucide="activity"></i>
+                        Recent Activity
+                    </h3>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i data-lucide="log-in" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <div class="activity-text">Successfully logged in</div>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i data-lucide="smartphone" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <div class="activity-text">OTP verified via WhatsApp</div>
+                        <div class="activity-time">1 min ago</div>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="logout()">
+                    <i data-lucide="log-out"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const API_URL = window.location.origin;
+        let currentPhone = '';
+        let signupTimerInterval = null;
+        let loginTimerInterval = null;
+        let signupTimeLeft = 0;
+        let loginTimeLeft = 0;
+        
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                loadDashboard();
+            }
+            lucide.createIcons();
+        };
+        
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName + '-page').classList.add('active');
+            
+            const titles = {
+                'signup': 'Create Account',
+                'verify-signup': 'Verify Phone',
+                'login': 'Login',
+                'verify-login': 'Verify Login',
+                'dashboard': 'Dashboard'
+            };
+            
+            document.getElementById('header-title').textContent = titles[pageName] || 'Welcome';
+            
+            if (pageName === 'dashboard') {
+                document.getElementById('main-container').classList.add('dashboard-container');
+            } else {
+                document.getElementById('main-container').classList.remove('dashboard-container');
+            }
+
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+        
+        function showAlert(pageId, message, type = 'error') {
+            const alertDiv = document.getElementById(pageId + '-alert');
+            const iconMap = {
+                'error': 'alert-circle',
+                'success': 'check-circle',
+                'info': 'info'
+            };
+            alertDiv.innerHTML = `<div class="alert alert-${type}">
+                <i data-lucide="${iconMap[type]}" style="width: 20px; height: 20px;"></i>
+                ${message}
+            </div>`;
+            lucide.createIcons();
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        function startTimer(type, seconds) {
+            const timerElement = document.getElementById(`${type}-timer`);
+            const resendButton = document.getElementById(`resend-${type}-btn`);
+            
+            if (type === 'signup') {
+                signupTimeLeft = seconds;
+                clearInterval(signupTimerInterval);
+            } else {
+                loginTimeLeft = seconds;
+                clearInterval(loginTimerInterval);
+            }
+
+            resendButton.disabled = true;
+
+            const interval = setInterval(() => {
+                const timeLeft = type === 'signup' ? signupTimeLeft : loginTimeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerElement.innerHTML = '';
+                    resendButton.disabled = false;
+                    lucide.createIcons();
+                    return;
+                }
+
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.innerHTML = `
+                    <i data-lucide="clock" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                    Resend available in ${minutes}:${seconds.toString().padStart(2, '0')}
+                `;
+                lucide.createIcons();
+
+                if (type === 'signup') {
+                    signupTimeLeft--;
+                } else {
+                    loginTimeLeft--;
+                }
+            }, 1000);
+
+            if (type === 'signup') {
+                signupTimerInterval = interval;
+            } else {
+                loginTimerInterval = interval;
+            }
+        }
+
+        async function resendOTP(type) {
+            const endpoint = type === 'signup' ? '/api/signup' : '/api/login';
+            const alertId = type === 'signup' ? 'verify-signup' : 'verify-login';
+            const btn = document.getElementById(`resend-${type}-btn`);
+
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Sending...';
+            lucide.createIcons();
+
+            try {
+                let body = { phone: currentPhone };
+                if (type === 'signup') {
+                    body = {
+                        name: document.getElementById('signup-name').value,
+                        email: document.getElementById('signup-email').value,
+                        phone: currentPhone,
+                        password: document.getElementById('signup-password').value
+                    };
+                }
+
+                const response = await fetch(`${API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showAlert(alertId, 'New OTP sent to your WhatsApp!', 'success');
+                    startTimer(type, 60);
+                } else {
+                    showAlert(alertId, result.error || 'Failed to resend OTP');
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                showAlert(alertId, 'Network error. Please try again.');
+                btn.disabled = false;
+            }
+
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        }
+        
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('signup-btn');
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Sending OTP...';
+            lucide.createIcons();
+            
+            const data = {
+                name: document.getElementById('signup-name').value,
+                email: document.getElementById('signup-email').value,
+                phone: document.getElementById('signup-phone').value,
+                password: document.getElementById('signup-password').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    currentPhone = data.phone;
+                    showPage('verify-signup');
+                    showAlert('verify-signup', 'OTP sent to your WhatsApp!', 'success');
+                    startTimer('signup', 60);
+                } else {
+                    showAlert('signup', result.error || 'Signup failed');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showAlert('signup', 'Connection error. Please try again.');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        });
+        
+        document.getElementById('verify-signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('verify-signup-btn');
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Verifying...';
+            lucide.createIcons();
+            
+            const code = document.getElementById('verify-signup-code').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/verify-signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: currentPhone, code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    clearInterval(signupTimerInterval);
+                    loadDashboard();
+                } else {
+                    showAlert('verify-signup', result.error || 'Invalid OTP');
+                }
+            } catch (error) {
+                showAlert('verify-signup', 'Network error. Please try again.');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        });
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Sending OTP...';
+            lucide.createIcons();
+            
+            const phone = document.getElementById('login-phone').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentPhone = phone;
+                    showPage('verify-login');
+                    showAlert('verify-login', 'OTP sent to your WhatsApp!', 'success');
+                    startTimer('login', 60);
+                } else {
+                    showAlert('login', result.error || 'Login failed');
+                }
+            } catch (error) {
+                showAlert('login', 'Network error. Please try again.');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        });
+        
+        document.getElementById('verify-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('verify-login-btn');
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Verifying...';
+            lucide.createIcons();
+            
+            const code = document.getElementById('verify-login-code').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/verify-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: currentPhone, code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    clearInterval(loginTimerInterval);
+                    loadDashboard();
+                } else {
+                    showAlert('verify-login', result.error || 'Invalid OTP');
+                }
+            } catch (error) {
+                showAlert('verify-login', 'Network error. Please try again.');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        });
+        
+        document.getElementById('profile-update-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('update-profile-btn');
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i> Updating...';
+            lucide.createIcons();
+            
+            const name = document.getElementById('update-name').value;
+            const email = document.getElementById('update-email').value;
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    const initials = result.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    document.getElementById('user-avatar').textContent = initials;
+                    document.getElementById('user-name').textContent = result.user.name;
+                    document.getElementById('user-email').textContent = result.user.email;
+                    document.getElementById('update-name').value = result.user.name;
+                    document.getElementById('update-email').value = result.user.email;
+                    
+                    showAlert('profile-update-alert', result.message || 'Profile updated successfully!', 'success');
+                } else {
+                    showAlert('profile-update-alert', result.error || 'Update failed');
+                }
+            } catch (error) {
+                console.error('Update error:', error);
+                showAlert('profile-update-alert', 'Network error. Please try again.');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            lucide.createIcons();
+        });
+
+        async function loadDashboard() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (user) {
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                document.getElementById('user-avatar').textContent = initials;
+                document.getElementById('user-name').textContent = user.name;
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('user-phone').textContent = user.phone;
+                
+                document.getElementById('update-name').value = user.name;
+                document.getElementById('update-email').value = user.email;
+                
+                showPage('dashboard');
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            clearInterval(signupTimerInterval);
+            clearInterval(loginTimerInterval);
+            showPage('login');
+        }
+    </script>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i data-lucide="sparkles"></i>
+                Created by Mr Frank
+            </div>
+            <p class="footer-text">
+                Secure authentication powered by WhatsApp OTP. Built with passion for seamless user experience.
+            </p>
+            <div class="social-links">
+                <a href="https://facebook.com" target="_blank" class="social-link" aria-label="Facebook">
+                    <i data-lucide="facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="social-link" aria-label="Twitter">
+                    <i data-lucide="twitter"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="social-link" aria-label="Instagram">
+                    <i data-lucide="instagram"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="social-link" aria-label="LinkedIn">
+                    <i data-lucide="linkedin"></i>
+                </a>
+                <a href="https://github.com" target="_blank" class="social-link" aria-label="GitHub">
+                    <i data-lucide="github"></i>
+                </a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2025 Mr Frank. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

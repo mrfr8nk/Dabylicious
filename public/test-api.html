@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Tester</h1>
+    
+    <h2>Test Signup</h2>
+    <input type="text" id="name" placeholder="Name" value="Test User">
+    <input type="email" id="email" placeholder="Email" value="test@test.com">
+    <input type="tel" id="phone" placeholder="Phone" value="+263719647303">
+    <input type="password" id="password" placeholder="Password" value="test123">
+    <button onclick="testSignup()">Test Signup</button>
+    
+    <h2>Response:</h2>
+    <pre id="response">No response yet...</pre>
+
+    <script>
+        const API_URL = window.location.origin;
+        
+        async function testSignup() {
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value
+            };
+            
+            document.getElementById('response').textContent = 'Sending request...';
+            
+            try {
+                console.log('API URL:', API_URL);
+                console.log('Request data:', data);
+                
+                const response = await fetch(`${API_URL}/api/signup`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const text = await response.text();
+                console.log('Response text:', text);
+                
+                try {
+                    const json = JSON.parse(text);
+                    document.getElementById('response').textContent = JSON.stringify(json, null, 2);
+                } catch {
+                    document.getElementById('response').textContent = text;
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('response').textContent = 'ERROR: ' + error.message + '\n\nCheck browser console for details.';
+            }
+        }
+        
+        // Test on load
+        console.log('Current URL:', window.location.href);
+        console.log('API Base URL:', API_URL);
+    </script>
+</body>
+</html>
